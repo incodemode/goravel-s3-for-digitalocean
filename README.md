@@ -54,7 +54,25 @@ import (
     },
 }
 ```
-
+3.1.- If you need a connection using another endpoint, like Digital Ocean:
+```
+"disks": map[string]any{
+    ...
+    "s3": map[string]any{
+        "driver": "custom",
+        "key":    config.Env("DO_ACCESS_KEY_ID"),
+        "secret": config.Env("DO_ACCESS_KEY_SECRET"),
+        "region": config.Env("DO_REGION"),
+        "bucket": config.Env("DO_BUCKET"),
+        "url":    config.Env("DO_URL"),
+        "endpoint":    config.Env("DO_ENDPOINT". "https://sfo3.digitaloceanspaces.com"),
+        "use_path_style": false,
+        "via": func() (filesystem.Driver, error) {
+            return s3facades.S3("s3"), nil // The `s3` value is the `disks` key
+        },
+    },
+}
+```
 ## Testing
 
 Run command below to run test(fill your owner s3 configuration):
