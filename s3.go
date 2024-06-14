@@ -44,10 +44,12 @@ func NewS3(ctx context.Context, config config.Config, disk string) (*S3, error) 
 	if accessKeyId == "" || accessKeySecret == "" || region == "" || bucket == "" || url == "" {
 		return nil, fmt.Errorf("please set %s configuration first", disk)
 	}
-
+	endpoint := "https://" + region + ".digitaloceanspaces.com"
 	client := s3.New(s3.Options{
-		Region:      region,
-		Credentials: aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(accessKeyId, accessKeySecret, "")),
+		Region:       region,
+		Credentials:  aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(accessKeyId, accessKeySecret, "")),
+		BaseEndpoint: aws.String(endpoint),
+		UsePathStyle: false, // // Configures to use subdomain/virtual calling format. Depending on your version, alternatively use o.UsePathStyle = false
 	})
 
 	return &S3{
